@@ -57,7 +57,7 @@ namespace Test
             oSlide.Call("RemoveAllObjects");
 
             // 1) Can't pass int[] or string[], the Call method requires only types convertable to CValue 
-            CValue oChart = oApi.Call("CreateChart", "bar3D", spreadsheetData.Data, spreadsheetData.Measures, spreadsheetData.Facts, 24);
+            CValue oChart = oApi.Call("CreateChart", "bar3D", spreadsheetData.Data, spreadsheetData.Measures, spreadsheetData.Facts);
 
             // 2) Can't pass more than 6 params, the Call method takes 6 params max 
             CValue oChartCValue = oApi.Call("CreateChart", "bar3D", data, cols, rows, 7200000, 3600000, 24);
