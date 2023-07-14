@@ -5,7 +5,7 @@ using CValue = docbuilder_net.CDocBuilderValue;
 using CContext = docbuilder_net.CDocBuilderContext;
 using CContextScope = docbuilder_net.CDocBuilderContextScope;
 
-namespace Test
+namespace SpreadsheetToPresentation
 {
     public class Program
     {
