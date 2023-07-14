@@ -1,4 +1,4 @@
-﻿using docbuilder_net;
+using docbuilder_net;
 
 using OfficeFileTypes = docbuilder_net.FileTypes;
 using CValue = docbuilder_net.CDocBuilderValue;
@@ -24,7 +24,11 @@ namespace ExternalDataToXlsx
                 { 1001, "Item A", 12.2, true }, 
                 { 1002, "Item B", 18.8, true }, 
                 { 1003, "Item C", 70.1, false }, 
-                { 1004, "Item D", 60.0, true } 
+                { 1004, "Item D", 60.0, true },
+                { 1005, "Item E", 32.6, true },
+                { 1006, "Item F", 28.0, false },
+                { 1007, "Item G", 11.1, false },
+                { 1008, "Item H", 41.4, true }
             };
 
             DataToXlsx(workDirectory, resultPath, data);
@@ -42,24 +46,33 @@ namespace ExternalDataToXlsx
             CValue oApi = oGlobal["Api"];
             CValue oWorksheet = oApi.Call("GetActiveSheet");
 
-            // Passing the whole array works for .docbuilder scripts, but won't work with the lib
-            // 2d array ("object[,] data") can't be transformed into CValue
-            // oWorksheet.Call("GetRange", "A1:D5").Call("SetValue", data);
-
-            // get 2d array height with Array.GetLength(0)
-            for (int row = 0; row < data.GetLength(0); row++)
-            {
-                // get 2d array width with Array.GetLength(1)
-                for (int col = 0; col < data.GetLength(1); col++)
-                {
-                    // xlsx row and col count starts from 1, not 0
-                    oWorksheet.Call("GetCells", row + 1, col + 1).Call("SetValue", data[row, col].ToString());
-                }
-            }
+            // Arrays can't be passed to DocBuilder API methods
+            // Array can't be transformed into CValue directly
+            // arrayToCValue function below should be used instead
+            CValue oArray = arrayToCValue(data, oContext);
+            oWorksheet.Call("GetRange", "A:Z").Call("SetValue", oArray);
 
             oBuilder.SaveFile(doctype, resultPath);
             oBuilder.CloseFile();
             CDocBuilder.Destroy();
+        }
+        public static CValue arrayToCValue(object[,] data, CContext oContext)
+        {
+            int rowsLen = data.GetLength(0);
+            int colsLen = data.GetLength(1);
+            CValue oArray = oContext.CreateArray(colsLen);
+
+            for (int col = 0; col < colsLen; col++)
+            {
+                CValue oArrayRow = oContext.CreateArray(rowsLen);
+
+                for (int row = 0; row < rowsLen; row++)
+                {
+                    oArrayRow[row] = data[row, col].ToString();
+                }
+                oArray[col] = oArrayRow;
+            }
+            return oArray;
         }
     }
 }
