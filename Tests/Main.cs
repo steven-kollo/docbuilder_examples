@@ -41,7 +41,7 @@ namespace Tests
             FillInvoice("invoices-list.xlsx", "invoice-template.docx");
 
             // Presentation from the spreadsheet
-            // ReadSpreadsheetData("chart_data.xlsx", "presentation.pptx");
+            // SpreadsheetDataToPresentation("chart_data.xlsx", "presentation.pptx");
         }
     }
 }
