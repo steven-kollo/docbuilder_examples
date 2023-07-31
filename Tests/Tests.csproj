@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-    <ItemGroup>
+  <ItemGroup>
     <Reference Include="C:\Program Files\ONLYOFFICE\DocumentBuilder\docbuilder.net.dll" />
   </ItemGroup>
 </Project>
