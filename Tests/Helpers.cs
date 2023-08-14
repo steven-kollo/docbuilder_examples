@@ -1,9 +1,9 @@
-using docbuilder_net;
+﻿using docbuilder_net;
 
 using OfficeFileTypes = docbuilder_net.FileTypes;
 using CValue = docbuilder_net.CDocBuilderValue;
 using CContext = docbuilder_net.CDocBuilderContext;
-using CContextScope = docbuilder_net.CDocBuilderContextScope;
+
 
 namespace Helpers
 {
@@ -18,24 +18,6 @@ namespace Helpers
             doctypes.Add("docx", (int)OfficeFileTypes.Document.DOCX);
             doctypes.Add("xlsx", (int)OfficeFileTypes.Spreadsheet.XLSX);
             doctypes.Add("pptx", (int)OfficeFileTypes.Presentation.PPTX);
-        }
-        
-        public static void SetEnvironment()
-        {
-            // add Docbuilder dlls in path
-            System.Environment.SetEnvironmentVariable("PATH", System.Environment.GetEnvironmentVariable("PATH") + ";" + workDirectory);
-        }
-        public static CDocBuilder InitDocBuilder()
-        {
-            CDocBuilder.Initialize(workDirectory);
-            CDocBuilder oBuilder = new CDocBuilder();
-            return oBuilder;
-        }
-        public static CContext GetFileContext(CDocBuilder oBuilder)
-        {
-            CContext oContext = oBuilder.GetContext();
-            CContextScope oScope = oContext.CreateScope();
-            return oContext;
         }
         public static void CreateFile(CDocBuilder oBuilder, string doctype)
         {

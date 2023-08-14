@@ -1,7 +1,8 @@
-using docbuilder_net;
+﻿using docbuilder_net;
 
 using CValue = docbuilder_net.CDocBuilderValue;
 using CContext = docbuilder_net.CDocBuilderContext;
+using CContextScope = docbuilder_net.CDocBuilderContextScope;
 
 using static Helpers.Methods;
 using static Tests.Tests;
@@ -10,14 +11,13 @@ namespace Tests
 {
     public class SpreadsheetToPresentation
     {
-        public static void SpreadsheetDataToPresentation(string spreadsheetName, string presentationName)
+        public static void SpreadsheetDataToPresentation(string spreadsheetName, string presentationName, CDocBuilder oBuilder)
         {
-            CDocBuilder oBuilder = InitDocBuilder();
-
             // create file
             var doctype = "xlsx";
             OpenFile(oBuilder, doctype, templatesPath + spreadsheetName);
-            CContext oContext = GetFileContext(oBuilder);
+            CContext oContext = oBuilder.GetContext();
+            CContextScope oScope = oContext.CreateScope();
             CValue oApi = GetApi(oContext);
             CValue oWorksheet = oApi.Call("GetActiveSheet");
             CValue oRange = oWorksheet.Call("GetUsedRange").Call("GetValue");
@@ -27,7 +27,8 @@ namespace Tests
 
             doctype = "pptx";
             CreateFile(oBuilder, doctype);
-            oContext = GetFileContext(oBuilder);
+            oContext = oBuilder.GetContext();
+            oScope = oContext.CreateScope();
             oApi = GetApi(oContext);
             CValue oPresentation = oApi.Call("GetPresentation");
             CValue oSlide = oPresentation.Call("GetSlideByIndex", 0);
@@ -48,7 +49,6 @@ namespace Tests
             oSlide.Call("AddObject", oChart);
 
             SaveAndCloseFile(oBuilder, filesPath + presentationName, doctype);
-            CDocBuilder.Destroy();
         }
         public static CValue colsFromArray(object[,] array, CContext oContext)
         {

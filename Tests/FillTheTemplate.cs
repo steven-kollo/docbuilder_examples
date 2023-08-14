@@ -1,7 +1,8 @@
-using docbuilder_net;
+﻿using docbuilder_net;
 
 using CValue = docbuilder_net.CDocBuilderValue;
 using CContext = docbuilder_net.CDocBuilderContext;
+using CContextScope = docbuilder_net.CDocBuilderContextScope;
 
 using static Helpers.Methods;
 using static Tests.Tests;
@@ -10,14 +11,13 @@ namespace Tests
 {
     public class FillTheTemplate
     {
-        public static void FillInvoice(string dataSheetPath, string invoiceTemplatePath)
+        public static void FillInvoice(string dataSheetPath, string invoiceTemplatePath, CDocBuilder oBuilder)
         {
-            CDocBuilder oBuilder = InitDocBuilder();
-
             // get data from the spreadsheet
             var doctype = "xlsx";
             OpenFile(oBuilder, doctype, templatesPath + dataSheetPath);
-            CContext oContext = GetFileContext(oBuilder);
+            CContext oContext = oBuilder.GetContext();
+            CContextScope oScope = oContext.CreateScope();
             CValue oApi = GetApi(oContext);
             CValue oWorksheet = oApi.Call("GetActiveSheet");
 
@@ -31,7 +31,8 @@ namespace Tests
             // fill invoice template and save as a new document
             doctype = "docx";
             OpenFile(oBuilder, doctype, templatesPath + invoiceTemplatePath);
-            oContext = GetFileContext(oBuilder);
+            oContext = oBuilder.GetContext();
+            oScope = oContext.CreateScope();
             oApi = GetApi(oContext);
             
             CValue oDocument = oApi.Call("GetDocument");
@@ -39,7 +40,6 @@ namespace Tests
 
             string filePath = GenerateInvoiceFilePath(invoice);
             SaveAndCloseFile(oBuilder, filePath, doctype);
-            CDocBuilder.Destroy();
         }
         public static Dictionary<string, string> createInvoiceDict(CValue data, CValue headers)
         {

@@ -1,3 +1,5 @@
+﻿using docbuilder_net;
+
 using static Helpers.Methods;
 
 using static Tests.HelloWorld;
@@ -5,6 +7,7 @@ using static Tests.CommentErrors;
 using static Tests.PassExternalData;
 using static Tests.FillTheTemplate;
 using static Tests.SpreadsheetToPresentation;
+
 
 namespace Tests
 {
@@ -26,22 +29,33 @@ namespace Tests
         
         public static void Main(string[] args)
         {
-            SetEnvironment(); // Helpers function: add Docbuilder dlls in path
+            // Set Environment
+            System.Environment.SetEnvironmentVariable("PATH", System.Environment.GetEnvironmentVariable("PATH") + ";" + workDirectory);
+
+            RunTests();
+        }
+
+        public static void RunTests()
+        {
+            CDocBuilder.Initialize(workDirectory);
+            CDocBuilder oBuilder = new CDocBuilder();
 
             // Hello World
-            // CreateSimpleDocument("hello_world.docx");
+            CreateSimpleDocument("hello_world.docx", oBuilder);
 
             // Comment errors
-            // CommentSpreadsheetErrors("spreadsheet_with_errors.xlsx");
+            CommentSpreadsheetErrors("spreadsheet_with_errors.xlsx", oBuilder);
 
             // External data to a spreadsheet
-            // DataToXlsx("external_data.xlsx", sampleTwoDimArray);
+            DataToXlsx("external_data.xlsx", sampleTwoDimArray, oBuilder);
 
             // Fill the template
-            FillInvoice("invoices-list.xlsx", "invoice-template.docx");
+            FillInvoice("invoices-list.xlsx", "invoice-template.docx", oBuilder);
 
             // Presentation from the spreadsheet
-            // SpreadsheetDataToPresentation("chart_data.xlsx", "presentation.pptx");
+            SpreadsheetDataToPresentation("chart_data.xlsx", "presentation.pptx", oBuilder);
+
+            CDocBuilder.Destroy();
         }
     }
 }

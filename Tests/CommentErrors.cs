@@ -1,7 +1,8 @@
-using docbuilder_net;
+﻿using docbuilder_net;
 
 using CValue = docbuilder_net.CDocBuilderValue;
 using CContext = docbuilder_net.CDocBuilderContext;
+using CContextScope = docbuilder_net.CDocBuilderContextScope;
 
 using static Helpers.Methods;
 using static Tests.Tests;
@@ -10,15 +11,13 @@ namespace Tests
 {
     public class CommentErrors
     {
-        public static void CommentSpreadsheetErrors(string templateName)
+        public static void CommentSpreadsheetErrors(string templateName, CDocBuilder oBuilder)
         {
-            // init builder
-            CDocBuilder oBuilder = InitDocBuilder();
-
             // open file
             var doctype = "xlsx";
             OpenFile(oBuilder, doctype, templatesPath + templateName);
-            CContext oContext = GetFileContext(oBuilder);
+            CContext oContext = oBuilder.GetContext();
+            CContextScope oScope = oContext.CreateScope();
             CValue oApi = GetApi(oContext);
 
             // comment errors
@@ -36,7 +35,6 @@ namespace Tests
 
             // save and close file
             SaveAndCloseFile(oBuilder, filesPath + templateName, doctype);
-            CDocBuilder.Destroy();
         }
         public static void CheckCell(CValue oWorksheet, string cell, int row, int col)
         {
@@ -48,4 +46,5 @@ namespace Tests
             }
         }
     }
+
 }
